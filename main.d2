@@ -1,0 +1,27 @@
+direction: right
+layout: elk
+
+style {
+  class: base         { fill: #1b2a44; stroke: #2e4b97 }
+  class: fork         { fill: #182235; stroke: #36507c }
+  class: experimental { fill: #231c0f; stroke: #6b4d16 }
+  class: api          { fill: #101826; stroke: #24304a }
+  class: api-edge     { stroke-dash: 6 }
+}
+
+/* Nodes (newline shows version text) */
+"Vanilla": "Vanilla\nMC 1.21.x+" { class: base }
+"CraftBukkit": "CraftBukkit\nMC 1.21.x+" { class: base }
+"Spigot": "Spigot\nMC 1.21.x+" { class: base }
+"Paper": "Paper\nMC 1.21.x+" { class: base }
+"Purpur": "Purpur\nMC 1.21.x+" { class: fork }
+"Bukkit (API)": "Bukkit (API)" { class: api }
+
+/* Edges */
+"CraftBukkit" -> "Vanilla"
+"Spigot" -> "CraftBukkit"
+"Paper" -> "Spigot"
+"Purpur" -> "Paper"
+"CraftBukkit" -> "Bukkit (API)" { class: api-edge }
+"Spigot"      -> "Bukkit (API)" { class: api-edge }
+"Paper"       -> "Bukkit (API)" { class: api-edge }
