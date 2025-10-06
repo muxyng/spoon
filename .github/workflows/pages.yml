@@ -16,8 +16,13 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: true
+
+env:
+  D2_VERSION: v0.6.7
+  D2_TARBALL: d2-v0.6.7-linux-amd64.tar.gz
+  D2_URL: https://github.com/terrastruct/d2/releases/download/v0.6.7/d2-v0.6.7-linux-amd64.tar.gz
 
 jobs:
   build:
@@ -25,19 +30,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Ensure D2 in PATH (fast install if missing)
-        shell: bash
+      - name: Install D2 (pinned tarball)
         run: |
           set -euo pipefail
           mkdir -p "$HOME/.local/bin"
-          if ! command -v d2 >/dev/null 2>&1; then
-            curl -fsSL https://d2lang.com/install.sh | sh -s -- -d "$HOME/.local/bin"
-          fi
+          tmp="$(mktemp -d)"
+          curl -fsSL "$D2_URL" -o "$tmp/$D2_TARBALL"
+          tar -xzf "$tmp/$D2_TARBALL" -C "$tmp"
+          # copy the d2 binary from whatever directory it extracted to
+          install -m 0755 "$(find "$tmp" -type f -name d2 | head -n1)" "$HOME/.local/bin/d2"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           d2 --version
 
       - name: Build static files
-        shell: bash
         run: |
           set -euo pipefail
           mkdir -p dist
